@@ -1,0 +1,17 @@
+
+
+
+$ npm init -y
+$ npm install cors dotenv express mongoose
+$ npm -D install dotenv
+$ npm list
+$ nodemon server.js 
+
+
+
+
+$ touch .env
+``
+APP_PORT=3001
+ATLAS_URL=mongodb+srv://<USERNAME>:<PWD>@<CLUSTER.DNS.NAME>/<DEF_DB>?retryWrites=true&w=majority
+``
