@@ -8,7 +8,7 @@ const app = express()
 
 require('dotenv').config()
 
-// const productRouter = require('./route/product-router')
+const routEmpleado = require('./route/router-employee')
 
 
 mongoose.connect(process.env.ATLAS_URL) 
@@ -25,7 +25,7 @@ db.once('open', () => {
 
 app.use( express.json() )
 app.use(cors());
-// app.use('/products', productRouter)
+app.use('/empleados', routEmpleado)
 
 
 //Main Root endPoint/Route for testing
