@@ -29,3 +29,46 @@ npm list
 ├── dotenv@16.4.1
 ├── express@4.18.2
 └── mongoose@8.1.1
+
+
+
+
+################################################################################################
+#   Agregar Trigger para emular el ID numerico secuencial de BD relacional
+#   
+#   Tip: https://www.mongodb.com/community/forums/t/cant-set-triggers-in-atlas/234390/2
+################################################################################################
+
+````````````````````````````````
+exports = async function(changeEvent) {
+  // A Database Trigger will always call a function with a changeEvent.
+  // Documentation on ChangeEvents: https://docs.mongodb.com/manual/reference/change-events/
+
+  // Access the _id of the changed document:
+  const docId = changeEvent.documentKey._id;
+
+  // Get the MongoDB service you want to use (see "Linked Data Sources" tab)
+  // Note: In Atlas Triggers, the service name is defaulted to the cluster name.
+  const serviceName = "Sandbox";
+  //console.log(`connectando a targetCollection [targetDb: ${changeEvent.ns.db}, targetColl: ${changeEvent.ns.coll}] `);
+  const targetCollection = await context.services.get(serviceName).db(changeEvent.ns.db).collection(changeEvent.ns.coll);
+  
+  const counterDb = "counters";
+  //console.log(`connectando a counterCollection: [counterDb: ${counterDb}]`);
+  const counterCollection = await context.services.get(serviceName).db(counterDb).collection(changeEvent.ns.coll);
+
+  // automically increment and retrieve a sequence relevant to the current namespace (db.collection)
+    const counter = await counterCollection.findOneAndUpdate({_id: changeEvent.ns },{ $inc: { seq_value: 1 }}, { returnNewDocument: true, upsert : true});
+
+    // Set a generic field <COLLECTION_NAME>Id 
+    const doc = {};
+    //doc[`${changeEvent.ns.coll}Id`] = counter.seq_value;
+    doc[`id`] = counter.seq_value;
+
+    //console.log(`Actualizando documento _id ${docId} en targetCollection` )
+    const updateRes = await targetCollection.updateOne({_id: docId},{ $set: doc});
+
+    //console.log(`Updated ${JSON.stringify(changeEvent.ns)} with counter ${counter.seq_value} result: ${JSON.stringify(updateRes)}`);
+};
+
+``````````````````````````````````

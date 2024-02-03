@@ -1,3 +1,6 @@
+
+/* No se usa todavia */
+
 //-- use 'strict'
 function isEmpty(obj) {
     if(!obj){
