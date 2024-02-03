@@ -10,7 +10,7 @@ const Empleado = require('../schema/Empleado')
 router.get('/', async (req, res) =>{
     //console.log('<empleado.GET>');
 
-    // var empleados = [];
+    var empleados = [];
     try{
         if(req.query){            
             let qy= req.query; 
@@ -19,8 +19,8 @@ router.get('/', async (req, res) =>{
             if(qIsEmpty(qy)){ //List:  {{BaseUrl}}/empleados/
                 //todos
                 let filter = {};
-                // var empleados = []; //TO_findAll
-                var empleados = await Empleado.find(filter);
+                // empleados = []; //TO_findAll
+                empleados = await Empleado.find(filter);
                 res.status(200).json(empleados);
             }
             else if(qy.consultar){   //Read:  {{BaseUrl}}/empleados/?consultar=ID
@@ -29,7 +29,9 @@ router.get('/', async (req, res) =>{
                 //var empleado = getEmpleadoId(idEmp);// TO_ReadOneByParam
                 var empleado = await readOneByParam(idEmp);
                 if(empleado.nombre){
-                    res.status(200).json(empleado);                 
+                    //Se agrega a arreglo por COMPATIBILIDAD con Cliente Rest
+                    empleados.push(empleado);
+                    res.status(200).json(empleados);
                 }
                 else{//Not Found
                     res.status(404).json({message:'No existe Empleado'});   
@@ -75,7 +77,7 @@ router.post('/', async (req, res) =>{
         //UPDATE
         else if(req.query && !qIsEmpty(req.query) && req.query.actualizar){ 
             const body = req.body;
-            //console.log('body: ', body);
+            // console.log('body: ', body);
             if(!body.id || !body.nombre || !body.correo){ //|| !body.nombre || !body.correo
                 res.status(400).json({error:'ID, Nombre y Correo son requeridos'});
             }else{

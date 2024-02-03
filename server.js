@@ -10,7 +10,6 @@ require('dotenv').config()
 
 const routEmpleado = require('./route/router-employee')
 
-
 mongoose.connect(process.env.ATLAS_URL) 
 
 const db = mongoose.connection
@@ -20,7 +19,11 @@ db.on('error', (e) => {
     console.log( e );
 })
 db.once('open', () => {
-    console.log('Successfully connected to Mongo');
+    console.log(`Successfully connected to Mongo`);
+    //Detalle opcional:
+    let clusterEnv = process.env.ATLAS_URL.includes('mongodb+srv')?'Atlas':process.env.ATLAS_URL.includes('localhost')?'Local':'Server';
+    let dbName = process.env.ATLAS_URL.substring( process.env.ATLAS_URL.lastIndexOf('/') + 1, process.env.ATLAS_URL.indexOf('?'));
+    console.log(`[${clusterEnv} > ${dbName?dbName:''}] `);
 })
 
 app.use( express.json() )

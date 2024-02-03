@@ -34,8 +34,8 @@ npm list
 
 
 ################################################################################################
-#   Agregar Trigger para emular el ID numerico secuencial de BD relacional
-#   
+#   Agregar Trigger para emular el ID numerico secuencial de BD relacional (usa $inc y findOneAndUpdate )
+#   https://www.mongodb.com/developer/products/atlas/triggers-tricks-auto-increment-fields/
 #   Tip: https://www.mongodb.com/community/forums/t/cant-set-triggers-in-atlas/234390/2
 ################################################################################################
 
